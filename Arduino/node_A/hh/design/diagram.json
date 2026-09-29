@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "parts": [
+    {
+      "id": "wokwi-ili9341-4nizss8ur",
+      "type": "wokwi-ili9341",
+      "x": 150,
+      "y": 150,
+      "rotation": 0,
+      "attrs": {}
+    }
+  ],
+  "connections": []
+}

@@ -1,0 +1,33 @@
+{
+    "type": "HALF_OFFLINE",
+    "devTools": "",
+    "logLevel": "warn",
+    "logEnable": true,
+    "gpu": "",
+    "canvas2d": true,
+    "sqlTimeout": 2000,
+    "connectTimeout": 5000,
+    "proxy": {
+        "enable": false,
+        "protocol": "http",
+        "host": "0.0.0.0",
+        "port": 0,
+        "username": "",
+        "password": ""
+    },
+    "onlineService": "https://pro.easyeda.com",
+    "updateService": "https://image.easyeda.com/files/easyeda-pro",
+    "systemLibName": "easyeda-std",
+    "firstRun": false,
+    "APP_PROJECT_DIR": [
+        "C:\\Users\\User\\OneDrive\\Documents\\EasyEDA-Pro\\projects",
+        "C:\\Users\\User\\OneDrive\\Documents\\EasyEDA-Pro\\example-projects"
+    ],
+    "CHECK_UPDATE": true,
+    "exportFilePath": "C:\\Users\\User\\Downloads",
+    "LIB_DIR": [
+        "C:\\Users\\User\\OneDrive\\Documents\\EasyEDA-Pro\\libraries"
+    ],
+    "ONLINE_BACKUP_DIR": "C:\\Users\\User\\OneDrive\\Documents\\EasyEDA-Pro\\online-projects-backup",
+    "TMP_BACKUP_DIR": "C:\\Users\\User\\OneDrive\\Documents\\EasyEDA-Pro\\projects-recovery"
+}

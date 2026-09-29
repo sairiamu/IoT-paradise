@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../ultrasonica_client"
+		},
+		{
+			"name": "water_sensor",
+			"path": ".."
+		}
+	],
+	"settings": {}
+}

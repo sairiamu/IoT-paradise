@@ -1,0 +1,16 @@
+{
+  "folders": [
+	{
+		"path": "../../Trial"
+	},
+	{
+		"name": "CLIENT",
+		"path": "../../CLIENT"
+	},
+	{
+		"name": "Digital_menu",
+		"path": ".."
+	}
+],
+  "settings": {}
+}

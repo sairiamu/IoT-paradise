@@ -1,0 +1,16 @@
+{
+  "folders": [
+	{
+		"path": "../../CLIENT_SERVER"
+	},
+	{
+		"name": "Master_slave",
+		"path": ".."
+	},
+	{
+		"name": "Chat_system",
+		"path": "../../Chat_system"
+	}
+],
+  "settings": {}
+}
