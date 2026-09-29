@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IoT Telemetry Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
+    .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+  </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+  <div class="max-w-6xl mx-auto space-y-6">
+    
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 glass p-6 rounded-2xl">
+      <div>
+        <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+          <span class="inline-block w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+          Environment Telemetry Monitor
+        </h1>
+        <p class="text-slate-400 text-sm mt-1">Channel ID: 3459358 • Live Monitoring</p>
+      </div>
+      <div class="text-right">
+        <span id="last-update" class="text-xs text-slate-400">Syncing...</span>
+      </div>
+    </div>
+
+    <!-- Metric Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Temperature Card -->
+      <div class="glass p-6 rounded-2xl border-l-4 border-l-orange-500">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400 font-medium text-sm">Temperature</span>
+          <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">Field 1</span>
+        </div>
+        <div class="mt-4 flex items-baseline gap-2">
+          <span id="temp-val" class="text-5xl font-extrabold text-white">--</span>
+          <span class="text-2xl font-medium text-slate-400">°C</span>
+        </div>
+      </div>
+
+      <!-- Humidity Card -->
+      <div class="glass p-6 rounded-2xl border-l-4 border-l-cyan-500">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400 font-medium text-sm">Humidity</span>
+          <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Field 2</span>
+        </div>
+        <div class="mt-4 flex items-baseline gap-2">
+          <span id="hum-val" class="text-5xl font-extrabold text-white">--</span>
+          <span class="text-2xl font-medium text-slate-400">%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="glass p-6 rounded-2xl">
+      <h2 class="text-lg font-semibold text-white mb-4">Historical Readings</h2>
+      <div class="relative h-72 w-full">
+        <canvas id="telemetryChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const CHANNEL_ID = '3459358';
+    const READ_API_KEY = 'Y8WNVNQ4FES6OQSQ';
+    const API_URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?api_key=${READ_API_KEY}&results=15`;
+
+    let chart;
+
+    function initChart() {
+      const ctx = document.getElementById('telemetryChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: 'Temperature (°C)',
+              borderColor: '#f97316',
+              backgroundColor: 'rgba(249, 115, 22, 0.1)',
+              data: [],
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Humidity (%)',
+              borderColor: '#06b6d4',
+              backgroundColor: 'rgba(6, 182, 212, 0.1)',
+              data: [],
+              fill: true,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#94a3b8' } } },
+          scales: {
+            x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      });
+    }
+
+    async function fetchData() {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        const feeds = data.feeds;
+
+        if (feeds && feeds.length > 0) {
+          const latest = feeds[feeds.length - 1];
+          
+          document.getElementById('temp-val').innerText = parseFloat(latest.field1 || 0).toFixed(1);
+          document.getElementById('hum-val').innerText = parseFloat(latest.field2 || 0).toFixed(1);
+          
+          const timeStr = new Date(latest.created_at).toLocaleTimeString();
+          document.getElementById('last-update').innerText = `Last updated: ${timeStr}`;
+
+          const labels = feeds.map(f => new Date(f.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+          const tempData = feeds.map(f => parseFloat(f.field1 || 0));
+          const humData = feeds.map(f => parseFloat(f.field2 || 0));
+
+          chart.data.labels = labels;
+          chart.data.datasets[0].data = tempData;
+          chart.data.datasets[1].data = humData;
+          chart.update();
+        }
+      } catch (err) {
+        console.error('Failed to fetch ThingSpeak data:', err);
+      }
+    }
+
+    window.onload = () => {
+      initChart();
+      fetchData();
+      setInterval(fetchData, 15000);
+    };
+  </script>
+</body>
+</html>
